@@ -1,4 +1,4 @@
-defmodule Streamer.Binance.TradeEvent do
+defmodule BinanceInterface.TradeEvent do
   defstruct [
     :event_type,
     :event_time,

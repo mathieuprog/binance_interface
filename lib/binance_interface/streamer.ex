@@ -5,6 +5,8 @@ defmodule BinanceInterface.Streamer do
   require Logger
   require Mint.HTTP
 
+  alias BinanceInterface.TradeEvent
+
   defstruct [
     :conn,
     :request_ref,
@@ -169,7 +171,7 @@ defmodule BinanceInterface.Streamer do
   end
 
   defp process_event(%{"e" => "trade"} = event) do
-    trade_event = %Streamer.Binance.TradeEvent{
+    trade_event = %TradeEvent{
       event_type: event["e"],
       event_time: event["E"],
       symbol: event["s"],
@@ -188,7 +190,7 @@ defmodule BinanceInterface.Streamer do
     )
 
     Phoenix.PubSub.broadcast(
-      Streamer.PubSub,
+      BinanceInterface.PubSub,
       "TRADE_EVENTS:#{trade_event.symbol}",
       trade_event
     )

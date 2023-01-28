@@ -8,10 +8,10 @@ defmodule BinanceInterface.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Finch, name: MyFinch},
+      {Finch, name: BinanceInterface.Finch},
       {
         Phoenix.PubSub,
-        name: Streamer.PubSub, adapter_name: Phoenix.PubSub.PG2
+        adapter_name: Phoenix.PubSub.PG2, name: BinanceInterface.PubSub
       }
     ]
 

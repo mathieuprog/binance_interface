@@ -24,7 +24,7 @@ defmodule BinanceInterface do
 
     {:ok, response} =
       Finch.build(:post, url(request), headers(request), body(request))
-      |> Finch.request(MyFinch)
+      |> Finch.request(BinanceInterface.Finch)
 
     response
     |> Map.fetch!(:body)
