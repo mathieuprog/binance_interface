@@ -4,11 +4,10 @@ defmodule BinanceInterface do
 
   import BinanceInterface.Request
 
-  def stream_trades(base_asset, quote_asset) do
-    # btcusdt
-    symbol = symbol_name(base_asset, quote_asset)
+  def stream_trades(base_currency, quote_currency) do
+    currency_pair = currency_pair(base_currency, quote_currency)
 
-    {:ok, _pid} = Streamer.connect("wss://stream.binance.com:9443/ws/#{symbol}@trade")
+    {:ok, _pid} = Streamer.connect("wss://stream.binance.com:9443/ws/#{currency_pair}@trade")
   end
 
   def asset(name), do: do_assets(name)
@@ -31,12 +30,12 @@ defmodule BinanceInterface do
     |> Jason.decode!()
   end
 
-  defp symbol_name(base_asset, quote_asset) do
-    asset_name(base_asset) <> asset_name(quote_asset)
+  defp currency_pair(base_currency, quote_currency) do
+    currency(base_currency) <> currency(quote_currency)
   end
 
-  defp asset_name(asset) do
-    asset
+  defp currency(currency) do
+    currency
     |> to_string()
     |> String.downcase()
   end
