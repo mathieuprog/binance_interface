@@ -83,8 +83,7 @@ defmodule BinanceInterface.Request do
       |> add_query_param("timestamp", System.os_time(:millisecond))
       |> add_query_param("recvWindow", Keyword.get(opts, :expires_after_ms, 5000))
 
-    payload =
-      URI.encode_query(request.query_params) <> URI.encode_query(request.body_data)
+    payload = URI.encode_query(request.query_params) <> URI.encode_query(request.body_data)
 
     signature =
       :crypto.mac(:hmac, :sha256, secret_key, payload)

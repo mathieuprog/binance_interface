@@ -12,16 +12,19 @@ defmodule BinanceInterface.Env do
   end
 
   def api_key() do
-    Process.get({__MODULE__, :api_key}, Application.get_env(:binance_interface, :api_key))
-    || raise "binance api key not found"
+    Process.get({__MODULE__, :api_key}, Application.get_env(:binance_interface, :api_key)) ||
+      raise "binance api key not found"
   end
 
   def secret_key() do
-    Process.get({__MODULE__, :secret_key}, Application.get_env(:binance_interface, :secret_key))
-    || raise "binance secret key not found"
+    Process.get({__MODULE__, :secret_key}, Application.get_env(:binance_interface, :secret_key)) ||
+      raise "binance secret key not found"
   end
 
   def base_url() do
-    Process.get({__MODULE__, :base_url}, Application.get_env(:binance_interface, :base_url, "https://api.binance.com"))
+    Process.get(
+      {__MODULE__, :base_url},
+      Application.get_env(:binance_interface, :base_url, "https://api.binance.com")
+    )
   end
 end

@@ -5,7 +5,8 @@ defmodule BinanceInterface do
   import BinanceInterface.Request
 
   def stream_trades(base_asset, quote_asset) do
-    symbol = symbol_name(base_asset, quote_asset) # btcusdt
+    # btcusdt
+    symbol = symbol_name(base_asset, quote_asset)
 
     {:ok, _pid} = Streamer.connect("wss://stream.binance.com:9443/ws/#{symbol}@trade")
   end

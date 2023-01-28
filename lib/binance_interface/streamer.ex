@@ -136,8 +136,11 @@ defmodule BinanceInterface.Streamer do
           {:ok, event} ->
             Logger.debug("Received Json decoded: #{inspect(event)}")
             process_event(event)
-          {:error, _} -> Logger.error("Unable to parse msg: #{inspect(text)}")
+
+          {:error, _} ->
+            Logger.error("Unable to parse msg: #{inspect(text)}")
         end
+
         state
 
       frame, state ->
