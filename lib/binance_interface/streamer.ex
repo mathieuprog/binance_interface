@@ -7,8 +7,8 @@ defmodule BinanceInterface.Streamer do
 
   defstruct [
     :conn,
-    :websocket,
     :request_ref,
+    :websocket,
     :caller,
     :status,
     :resp_headers
@@ -124,29 +124,14 @@ defmodule BinanceInterface.Streamer do
 
   defp handle_responses(state, []), do: state
 
-  defp send_frame(state, frame) do
-    with {:ok, websocket, data} <- Mint.WebSocket.encode(state.websocket, frame),
-         state = put_in(state.websocket, websocket),
-         {:ok, conn} <- Mint.WebSocket.stream_request_body(state.conn, state.request_ref, data) do
-      {:ok, put_in(state.conn, conn)}
-    else
-      {:error, %Mint.WebSocket{} = websocket, reason} ->
-        {:error, put_in(state.websocket, websocket), reason}
-
-      {:error, conn, reason} ->
-        {:error, put_in(state.conn, conn), reason}
-    end
-  end
-
-  def handle_frames(state, frames) do
+  defp handle_frames(state, frames) do
     Enum.reduce(frames, state, fn
-      # reply to pings with pongs
+      # reply to ping with pong
       {:ping, data}, state ->
-        {:ok, state} = send_frame(state, {:pong, data})
+        {:ok, state} = stream_frame(state, {:pong, data})
         state
 
       {:text, text}, state ->
-        Logger.debug("Received: #{inspect(text)}")
         case Jason.decode(text) do
           {:ok, event} ->
             Logger.debug("Received Json decoded: #{inspect(event)}")
@@ -159,6 +144,20 @@ defmodule BinanceInterface.Streamer do
         Logger.debug("Unexpected frame received: #{inspect(frame)}")
         state
     end)
+  end
+
+  defp stream_frame(state, frame) do
+    with {:ok, websocket, data} <- Mint.WebSocket.encode(state.websocket, frame),
+         state = put_in(state.websocket, websocket),
+         {:ok, conn} <- Mint.WebSocket.stream_request_body(state.conn, state.request_ref, data) do
+      {:ok, put_in(state.conn, conn)}
+    else
+      {:error, %Mint.WebSocket{} = websocket, reason} ->
+        {:error, put_in(state.websocket, websocket), reason}
+
+      {:error, conn, reason} ->
+        {:error, put_in(state.conn, conn), reason}
+    end
   end
 
   defp reply(state, response) do
