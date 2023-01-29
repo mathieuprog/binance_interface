@@ -191,7 +191,7 @@ defmodule BinanceInterface.Streamer do
 
     Phoenix.PubSub.broadcast(
       BinanceInterface.PubSub,
-      "TRADE_EVENTS:#{trade_event.symbol}",
+      "TRADE_EVENTS:#{String.upcase(trade_event.symbol)}",
       trade_event
     )
   end
