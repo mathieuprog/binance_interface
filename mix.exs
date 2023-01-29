@@ -34,7 +34,7 @@ defmodule BinanceInterface.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:finch, "~> 0.13.0"},
+      {:finch, "~> 0.14.0"},
       {:mint_web_socket, "~> 1.0"},
       # TODO: once we support OTP 25+ only, castore might not be needed
       {:castore, "~> 0.1.18"},
