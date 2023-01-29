@@ -9,12 +9,12 @@ defmodule BinanceInterface.Request do
     signed?: false
   ]
 
-  def new_request(base_url, endpoint_path, api_key) do
+  def new_request(base_url, endpoint_path, api_key \\ nil) do
     %__MODULE__{
       base_url: base_url,
-      endpoint_path: endpoint_path,
-      headers: [{"X-MBX-APIKEY", api_key}]
+      endpoint_path: endpoint_path
     }
+    |> maybe_add_header("X-MBX-APIKEY", api_key)
   end
 
   def url(%{base_url: base_url, endpoint_path: endpoint_path} = request) do
