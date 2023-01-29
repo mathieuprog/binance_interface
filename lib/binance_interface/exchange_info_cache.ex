@@ -11,7 +11,7 @@ defmodule BinanceInterface.ExchangeInfoCache do
     [{^currency_pair, data}] = :ets.lookup(:exchange_info, currency_pair)
 
     data["filters"]
-    |> Enum.find(& &1["filterType"] == "PRICE_FILTER")
+    |> Enum.find(&(&1["filterType"] == "PRICE_FILTER"))
     |> Map.fetch!("tickSize")
   end
 
