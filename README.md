@@ -5,7 +5,7 @@
 ```elixir
 def deps do
   [
-    {:binance_interface, "~> 0.2.0"}
+    {:binance_interface, "~> 0.3.0"}
   ]
 end
 ```
