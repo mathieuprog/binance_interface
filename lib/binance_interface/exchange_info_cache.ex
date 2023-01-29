@@ -23,10 +23,12 @@ defmodule BinanceInterface.ExchangeInfoCache do
   def init(nil) do
     :ets.new(:exchange_info, [:named_table])
 
-    response = BinanceInterface.exchange_info()
+    Logger.info("Fetch exchange info and store in ETS cache")
 
-    response["symbols"]
+    BinanceInterface.exchange_info()["symbols"]
     |> Enum.each(&:ets.insert(:exchange_info, {&1["symbol"], &1}))
+
+    Logger.info("Exchange info cached")
 
     {:ok, nil}
   end
