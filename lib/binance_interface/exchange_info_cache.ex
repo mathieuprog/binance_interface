@@ -3,8 +3,10 @@ defmodule BinanceInterface.ExchangeInfoCache do
 
   require Logger
 
+  import BinanceInterface.Normalizer
+
   def tick_size(base_currency, quote_currency) do
-    currency_pair = currency_pair(base_currency, quote_currency)
+    currency_pair = currency_pair(base_currency, quote_currency, :upcase)
 
     [{^currency_pair, data}] = :ets.lookup(:exchange_info, currency_pair)
 
@@ -27,17 +29,5 @@ defmodule BinanceInterface.ExchangeInfoCache do
     |> Enum.each(&:ets.insert(:exchange_info, {&1["symbol"], &1}))
 
     {:ok, nil}
-  end
-
-  defp currency_pair(base_currency, quote_currency) do
-    currency(base_currency) <> currency(quote_currency)
-  end
-
-  defp currency(nil), do: nil
-
-  defp currency(currency) do
-    currency
-    |> to_string()
-    |> String.upcase()
   end
 end

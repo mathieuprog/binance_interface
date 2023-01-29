@@ -2,10 +2,11 @@ defmodule BinanceInterface do
   alias BinanceInterface.Env
   alias BinanceInterface.Streamer
 
+  import BinanceInterface.Normalizer
   import BinanceInterface.Request
 
   def stream_trades(base_currency, quote_currency) do
-    currency_pair = currency_pair(base_currency, quote_currency)
+    currency_pair = currency_pair(base_currency, quote_currency, :downcase)
 
     {:ok, _pid} = Streamer.connect("wss://stream.binance.com:9443/ws/#{currency_pair}@trade")
   end
@@ -15,12 +16,12 @@ defmodule BinanceInterface do
   def positive_assets(), do: do_assets()
 
   defp do_assets(currency \\ nil) do
-    currency = currency(currency)
+    maybe_currency = maybe_currency(currency, :upcase)
 
     request =
       new_request(Env.base_url(), "/sapi/v3/asset/getUserAsset", Env.api_key())
       |> add_header("Content-Type", "application/x-www-form-urlencoded")
-      |> maybe_add_body_data("asset", currency)
+      |> maybe_add_body_data("asset", maybe_currency)
       |> add_signature(Env.secret_key())
 
     {:ok, response} =
@@ -35,7 +36,7 @@ defmodule BinanceInterface do
   def exchange_info(), do: do_exchange_info()
 
   def exchange_info(base_currency, quote_currency) do
-    currency_pair = currency_pair(base_currency, quote_currency)
+    currency_pair = currency_pair(base_currency, quote_currency, :upcase)
 
     do_exchange_info(currency_pair)
   end
@@ -52,17 +53,5 @@ defmodule BinanceInterface do
     response
     |> Map.fetch!(:body)
     |> Jason.decode!()
-  end
-
-  defp currency_pair(base_currency, quote_currency) do
-    currency(base_currency) <> currency(quote_currency)
-  end
-
-  defp currency(nil), do: nil
-
-  defp currency(currency) do
-    currency
-    |> to_string()
-    |> String.downcase()
   end
 end
